@@ -1,45 +1,64 @@
-import './App.css'
-import useManyJokes from './hooks/useManyJokes'
+import { Alert, Container, Skeleton, Typography } from '@mui/material'
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import { TwoPartJoke } from './types/types'
+import { FaChevronDown } from 'react-icons/fa';
+import useManyJokes from './hooks/useManyJokes'
 
 function App() {
 
-  // Use this for single jokes
-  // Options can be a empty obj to use defaults
-  // const {joke, error, isLoading} = useSingleJoke<TwoPartJoke>({
-  //   jokeCategory: "Programming",
-  //   type: "twopart"
-  // })
-
-  // Use this for multiple jokes
-  // Options can be a empty obj to use defaults  
   const {jokes, error, isLoading} = useManyJokes<TwoPartJoke>({
     jokeCategory: "Programming",
     type: "twopart",
     amount: 5
   })
 
-  if (error?.response?.data) {
-    return <p>{error.response.data.additionalInfo}</p>
+  const skeletonsToRender = [1,2,3,4,5]
+
+  if (error?.response?.data?.error) {
+    return <Alert severity="error">{error.response.data.additionalInfo}</Alert>
   }
 
   if (error) {
-    return <p>{error.message}</p>
-  }  
-
-  if (isLoading) {
-    return <p>Loading, please wait...</p>
+    return <Alert severity="error">{error.message}</Alert>
   }  
 
   return (
-    <>
-      <h1>Jokes!</h1>
-      {/* Use this when fetching from useManyJokes */}
-      {jokes?.map(joke => 
-        <p key={joke.id}>{joke.setup} / {joke.delivery}</p>
-      )}
-      {/* Use this for useSingleJoke */}
-      {/* <p key={joke?.id}>{joke?.setup} / {joke?.delivery}</p> */}
+    <>    
+      <Container sx={{p: 5}}>
+
+        <Typography variant='h1'>Jokes!</Typography>
+
+        {isLoading &&    
+          skeletonsToRender.map(item => 
+          <Skeleton 
+            key={item}
+            sx={{my: 2}}
+            variant="rounded" 
+            width={"100%"} 
+            height={'50px'}/>
+          )
+        }
+
+        {jokes?.map(joke => 
+        <Accordion sx={{my: 2}} key={joke.id}>
+          <AccordionSummary
+            expandIcon={<FaChevronDown />}
+            aria-controls={`panel${joke.id}-content`}
+            id={`panel${joke.id}-header`}
+          >
+            <Typography sx={{fontWeight: 'bold', color: "primary.main"}} component="span">{joke.setup}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              {joke.delivery}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        )}
+
+      </Container>
     </>
   )
 }
