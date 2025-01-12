@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import Draggable from './Draggable';
 import Droppable from './Droppable';
 import { TwoPartJoke } from '../../types/types';
 import WinnerScreen from '../WinnerScreen';
+import useDndStore from './dndstage.store';
+import useAppStore from '../../stores/app.store';
 
 interface DragDropStageProps {
   jokes: TwoPartJoke[]
@@ -12,70 +14,65 @@ interface DragDropStageProps {
 
 const DragDropStage = ({jokes} : DragDropStageProps) => {
 
-  const [winner, setWinner] = useState(false);
+  const setWinner = useAppStore(s => s.setWinner);    
+  const roundsPlayed = useAppStore(s => s.roundsPlayed);    
 
-  console.log("Render");
+  // Using Zustand store as a 
+  // reducer to simplify component
+  // logic, not share with other
+  // parts of the app
+  const {
+    dragItems, 
+    dropAreas, 
+    initDragItems,
+    updateDragItem,
+    initDropAreas,
+    updateDropArea,
+    removeFromDropArea
+  } = useDndStore();  
 
-  const [dragItems, setDragItems] = useState(
-    jokes.map(joke => ({ id: joke.id, setup: joke.setup, where: 0 }))
-  );
+  useEffect(() => {
+    // Set 2 lists, one for "Draggable Items" 
+    // with the joke setup, another with 
+    // the "Droppable Areas" with the joke delivery
+    initDragItems(jokes)
+    initDropAreas(jokes)
+    console.log("Ran")
+  }, [roundsPlayed])
 
-  const [dropAreas, setDropAreas] = useState(
-    [...jokes]
-      .sort(() => Math.random() - 0.5)
-      .map(joke => ({ id: joke.id, delivery: joke.delivery, full: false, who: 0 }))
-  );  
+  useEffect(() => {
+    // Both lists have the joke ids, 
+    // if we have one list with all 
+    // ids matching, we have a winner
+    setWinner(dragItems.every(item => item.id === item.where));    
+  }, [dragItems]);
 
-  const handleDragEnd = ( { active, over } : DragEndEvent) => {
+  const handleDragEnd = ( { active, over } : DragEndEvent) => {   
     const activeId = Number(active.id);
+    // if drag ends "over" a drop area
     if (over) {
       const overIdFormatedToNumber = Number(over.id);
       const targetDragArea = dropAreas.find(item => item.id === overIdFormatedToNumber);
       if (!targetDragArea?.full) {
-        setDropAreas(prevState => 
-          prevState.map(item => 
-            item.who === activeId
-            ? {...item, full: false, who: 0}
-            : item
-        ));               
-        setDropAreas(prevState => 
-          prevState.map(item => 
-            item.id === overIdFormatedToNumber
-            ? {...item, full: true, who: activeId}
-            : item
-        ));    
-        setDragItems(prevState =>
-          prevState.map(item => 
-            item.id === activeId  
-            ? { ...item, where: overIdFormatedToNumber }
-            : item
-          )
-        );        
+        // Remove from previous drop area 
+        // in case it is moving between areas
+        removeFromDropArea(activeId); 
+        updateDropArea(overIdFormatedToNumber, activeId);
+        updateDragItem(activeId, overIdFormatedToNumber);
       } 
     } else {
-      setDropAreas(prevState => 
-        prevState.map(item => 
-          item.who === activeId
-          ? {...item, full: false, who: 0}
-          : item
-      ));      
-      setDragItems(prevState =>
-        prevState.map(item =>
-          item.id === activeId 
-            ? { ...item, where: 0}
-            : item
-        )
-      );
+      removeFromDropArea(activeId);
+      updateDragItem(activeId, 0);
     }
   }    
 
-  useEffect(() => {
-    setWinner(dragItems.every(item => item.id === item.where));    
-  }, [dragItems]);
+  // All errors should have been handled 
+  // before we get here, but just in case
+  if (dragItems.length < 1) return null
 
   return (
     <>
-      <WinnerScreen isVisible={winner} handlePlayAgain={() => console.log(1)}/>
+      <WinnerScreen/>
       <DndContext onDragEnd={handleDragEnd}>
         <Box 
           display="grid" 
@@ -105,8 +102,7 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
               sx={{
                 transformOrigin: "center center",
                 transition: "all 0.5s ease-in",
-                transform: winner ? "rotate(400deg) scale(2)" : "rotate(0deg) scale(1)",
-                opacity: winner ? 0 : 0.1 ,                
+                opacity: 0.1,                
                 width: '100%',
                 alignSelf: "center",
                 justifySelf: "center",

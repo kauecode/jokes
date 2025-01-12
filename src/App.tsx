@@ -6,16 +6,15 @@ import LoadingArea from './components/LoadingArea'
 import DragDropStage from './components/DragDropStage/DragDropStage'
 import HeadingArea from './components/HeadingArea'
 import FooterArea from './components/FooterArea'
-import { useState } from 'react'
 
-function App() {
+function App() {  
 
-  const [roundsPlayed, setRoundsPlayed] = useState(1);
+  const jokesToLoad = 6;
 
   const {jokes, error, isLoading} = useManyJokes<TwoPartJoke>({
     jokeCategory: "Programming",
     type: "twopart",
-    amount: 4
+    amount: jokesToLoad
   })
 
   return (
@@ -28,7 +27,7 @@ function App() {
         <HeadingArea />
 
         {isLoading &&    
-        <LoadingArea />}
+        <LoadingArea itemsPerColumn={jokesToLoad}/>}
 
         {jokes &&
         <DragDropStage jokes={jokes} />}

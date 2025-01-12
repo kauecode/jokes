@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import APIclient from '../services/apiClient';
 import { AxiosError, CanceledError } from 'axios';
 import { FetchResponseError, JokeCategory, JokeType } from '../types/types';
+import useAppStore from '../stores/app.store';
 
 interface useManyJokesProps {
   amount?: number,
@@ -10,6 +11,8 @@ interface useManyJokesProps {
 }
 
 const useManyJokes = <K,>({ amount = 10, jokeCategory = "Any", type = "twopart" } : useManyJokesProps) => {
+
+  const roundsPlayed = useAppStore(s => s.roundsPlayed);   
 
   const apiClient = new APIclient<K>(jokeCategory)
   
@@ -46,7 +49,7 @@ const useManyJokes = <K,>({ amount = 10, jokeCategory = "Any", type = "twopart" 
       controller.abort();
     }
 
-  },[])
+  },[roundsPlayed])
 
   return { jokes, error, isLoading }
 }

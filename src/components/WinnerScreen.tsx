@@ -1,11 +1,17 @@
 import { Backdrop, Button, Typography } from '@mui/material'
+import useAppStore from '../stores/app.store';
 
-interface WinnerScreenProps {
-  isVisible: boolean,
-  handlePlayAgain: () => void
-}
+const WinnerScreen = () => {
 
-const WinnerScreen = ({isVisible, handlePlayAgain} : WinnerScreenProps) => {
+  const increaseRoundsPlayed = useAppStore(s => s.increaseRoundsPlayed);    
+  const winner = useAppStore(s => s.winner);   
+  const setWinner = useAppStore(s => s.setWinner);    
+
+  const handlePlayAgain = () => {
+    increaseRoundsPlayed();
+    setWinner(false);
+  }
+
   return (
     <Backdrop
       sx={(theme) => ({ 
@@ -14,7 +20,7 @@ const WinnerScreen = ({isVisible, handlePlayAgain} : WinnerScreenProps) => {
         zIndex: theme.zIndex.drawer + 1,
         flexDirection: "column"
       })}
-      open={isVisible}
+      open={winner}
     >
       <Typography variant='h1'> Winner!!! </Typography>
       <Typography mt={0} mb={5}> You have matched all jokes! </Typography>
