@@ -35,7 +35,7 @@ const useManyJokes = <K,>({ amount = 10, jokeCategory = "Any", type = "twopart" 
       })
       .catch((err:AxiosError<FetchResponseError>) => {        
         if (err instanceof CanceledError) {
-          console.log("Fetch Canceled")
+          console.log("Fetch canceled on effect cleanup")
           return
         }
         setError(err);

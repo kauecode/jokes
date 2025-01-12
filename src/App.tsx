@@ -1,64 +1,40 @@
-import { Alert, Container, Skeleton, Typography } from '@mui/material'
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import { TwoPartJoke } from './types/types'
-import { FaChevronDown } from 'react-icons/fa';
+import { Container } from '@mui/material'
 import useManyJokes from './hooks/useManyJokes'
+import { TwoPartJoke } from './types/types'
+import Alerts from './components/Alerts'
+import LoadingArea from './components/LoadingArea'
+import DragDropStage from './components/DragDropStage/DragDropStage'
+import HeadingArea from './components/HeadingArea'
+import FooterArea from './components/FooterArea'
+import { useState } from 'react'
 
 function App() {
+
+  const [roundsPlayed, setRoundsPlayed] = useState(1);
 
   const {jokes, error, isLoading} = useManyJokes<TwoPartJoke>({
     jokeCategory: "Programming",
     type: "twopart",
-    amount: 5
+    amount: 4
   })
-
-  const skeletonsToRender = [1,2,3,4,5]
-
-  if (error?.response?.data?.error) {
-    return <Alert severity="error">{error.response.data.additionalInfo}</Alert>
-  }
-
-  if (error) {
-    return <Alert severity="error">{error.message}</Alert>
-  }  
 
   return (
     <>    
-      <Container sx={{p: 5}}>
+      {error &&
+      <Alerts error={error} />}    
+            
+      <Container sx={{p: 5}}>       
 
-        <Typography variant='h1'>Jokes!</Typography>
+        <HeadingArea />
 
         {isLoading &&    
-          skeletonsToRender.map(item => 
-          <Skeleton 
-            key={item}
-            sx={{my: 2}}
-            variant="rounded" 
-            width={"100%"} 
-            height={'50px'}/>
-          )
-        }
+        <LoadingArea />}
 
-        {jokes?.map(joke => 
-        <Accordion sx={{my: 2}} key={joke.id}>
-          <AccordionSummary
-            expandIcon={<FaChevronDown />}
-            aria-controls={`panel${joke.id}-content`}
-            id={`panel${joke.id}-header`}
-          >
-            <Typography sx={{fontWeight: 'bold', color: "primary.main"}} component="span">{joke.setup}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              {joke.delivery}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        )}
+        {jokes &&
+        <DragDropStage jokes={jokes} />}
 
       </Container>
+      <FooterArea />      
     </>
   )
 }
