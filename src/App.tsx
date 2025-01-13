@@ -12,7 +12,7 @@ function App() {
 
   // How many jokes should we fetch?
   // Used for loading skeletons as well
-  const JOKES_TO_LOAD = 5;
+  const JOKES_TO_LOAD = 7;
 
   // All params in this hook are optional, used to fetch the jokes from the API
   const {jokes, error, isLoading} = useManyJokes<TwoPartJoke>({
