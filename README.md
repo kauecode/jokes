@@ -16,11 +16,11 @@ This is a game built using the [Jokes API](https://v2.jokeapi.dev/), where you a
 
 ## Live Demo
 
-Check the live demo on this [link](https://), hosted on Vercel.
+Check the live demo on this [link](https://jokes-self.vercel.app/), hosted on Vercel.
 
 ## Local Dev Instructions
 
-1. git clone <repo-url>
+1. git clone https://github.com/kauecode/jokes.git
 2. cd <project-folder>
 3. 'npm install'
 4. 'npm run dev'
