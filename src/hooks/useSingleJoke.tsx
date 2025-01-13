@@ -8,6 +8,8 @@ interface useSingleJokesProps {
   type?: JokeType
 }
 
+// This hook is not in use, but I will leave
+// here in case we want to fetch single jokes at some point
 const useSingleJoke = <K,>({ jokeCategory = "Any", type = "twopart" } : useSingleJokesProps) => {
 
   const apiClient = new APIclient<K>(jokeCategory)

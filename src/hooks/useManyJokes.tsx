@@ -27,14 +27,20 @@ const useManyJokes = <K,>({ amount = 10, jokeCategory = "Any", type = "twopart" 
     const controller = new AbortController();
 
     apiClient.getJokes({signal: controller.signal, params: {
-      blacklistFlags: "nsfw,religious,sexist,explicit",
+      blacklistFlags: "nsfw,religious,political,racist,sexist,explicit",
       type,
       amount
     }})
       .then(res => {
-        setJokes(res.jokes);
-        setIsLoading(false);
-        setError(null);
+        // This timeout will be removed, 
+        // for now it creates suspense, 
+        // accomplishes nothing, but I heard
+        // you like to see spinners... :P        
+        setTimeout(() => { 
+          setJokes(res.jokes);
+          setIsLoading(false);
+          setError(null);
+        }, 1000)        
       })
       .catch((err:AxiosError<FetchResponseError>) => {        
         if (err instanceof CanceledError) {

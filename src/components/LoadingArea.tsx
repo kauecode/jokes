@@ -9,7 +9,7 @@ const LoadingArea = ({itemsPerColumn}:LoadingAreaProps) => {
     <>
       <Box 
         display="grid"           
-        padding={3}
+        padding={2}
         gridTemplateColumns={{ xs: "1fr", md: "3fr 1fr 3fr" }} 
         gap={5}
       > 
@@ -23,7 +23,12 @@ const LoadingArea = ({itemsPerColumn}:LoadingAreaProps) => {
               height={'80px'}/>
           )}          
         </Box>
-        <Box textAlign={"center"} padding={5}>
+        <Box 
+          sx={{
+            display: 'flex', 
+            justifyContent: 'center', 
+            p: 5,
+            alignItems: 'center'}}>
           <CircularProgress />
         </Box>            
         <Box>

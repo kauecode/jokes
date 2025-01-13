@@ -13,7 +13,7 @@ const Draggable = ({children, id, where} : DraggableProps) => {
  
   const {attributes, listeners, setNodeRef, transform} = useDraggable({id: id});
   
-  const style = { transform: CSS.Translate.toString(transform) };
+  const style = { transform: CSS.Translate.toString(transform)};
 
   let isMatchedColor = "primary.main"; 
   if (where !== 0)
@@ -23,6 +23,7 @@ const Draggable = ({children, id, where} : DraggableProps) => {
     <Button
       variant='contained'
       sx={{
+        touchAction: "none",
         display: "inline-block",
         p:0.7, 
         width: 1, 

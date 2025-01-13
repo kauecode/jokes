@@ -15,7 +15,7 @@ const Droppable = ({children, id, who}:DroppableProps) => {
 
   let isMatchedColor = "white"; 
   if (who !== 0)
-    isMatchedColor = (id === who) ? "green" : "red";
+    isMatchedColor = (id === who) ? "#00b300" : "#bb0000";
 
   return (
     <Paper 

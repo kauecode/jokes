@@ -4,7 +4,6 @@ import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import Draggable from './Draggable';
 import Droppable from './Droppable';
 import { TwoPartJoke } from '../../types/types';
-import WinnerScreen from '../WinnerScreen';
 import useDndStore from './dndstage.store';
 import useAppStore from '../../stores/app.store';
 
@@ -37,7 +36,6 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
     // the "Droppable Areas" with the joke delivery
     initDragItems(jokes)
     initDropAreas(jokes)
-    console.log("Ran")
   }, [roundsPlayed])
 
   useEffect(() => {
@@ -72,7 +70,6 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
 
   return (
     <>
-      <WinnerScreen/>
       <DndContext onDragEnd={handleDragEnd}>
         <Box 
           display="grid" 
@@ -92,7 +89,7 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
                 }}
                 > {item.where === 0 &&
                   <Draggable id={item.id} where={0}>
-                    {item.setup} / {item.id}
+                    {item.setup}
                   </Draggable>}
                 </Box>
               ))} 
@@ -100,6 +97,7 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
           <Box display="flex">
             <Box
               sx={{
+                display: {xs: 'none', md: 'block'},
                 transformOrigin: "center center",
                 transition: "all 0.5s ease-in",
                 opacity: 0.1,                
@@ -125,11 +123,11 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
                       .filter(item => item.where === area.id)
                       .map(item => (
                         <Draggable key={item.id} id={item.id} where={item.where}>
-                          <Typography>{item.setup} / {item.id}</Typography>
-                          <Typography sx={{fontWeight: "600"}}>{area.delivery} / {area.id}</Typography>
+                          <Typography>{item.setup}</Typography>
+                          <Typography sx={{fontWeight: "600"}}>{area.delivery}</Typography>
                         </Draggable>
                       ))
-                  : <Typography sx={{textAlign: 'center'}}>{area.delivery} / {area.id}</Typography>}
+                  : <Typography sx={{textAlign: 'center'}}>{area.delivery}</Typography>}
               </Droppable>
             ))}
           </Box>

@@ -6,34 +6,34 @@ import LoadingArea from './components/LoadingArea'
 import DragDropStage from './components/DragDropStage/DragDropStage'
 import HeadingArea from './components/HeadingArea'
 import FooterArea from './components/FooterArea'
+import WinnerScreen from './components/WinnerScreen'
 
 function App() {  
 
-  const jokesToLoad = 6;
+  // How many jokes should we fetch?
+  // Used for loading skeletons as well
+  const JOKES_TO_LOAD = 5;
 
+  // All params in this hook are optional, used to fetch the jokes from the API
   const {jokes, error, isLoading} = useManyJokes<TwoPartJoke>({
     jokeCategory: "Programming",
     type: "twopart",
-    amount: jokesToLoad
+    amount: JOKES_TO_LOAD
   })
 
   return (
     <>    
       {error &&
-      <Alerts error={error} />}    
-            
-      <Container sx={{p: 5}}>       
-
+        <Alerts error={error} />}                
+      <Container sx={{p: {xs: 2, sm: 5}}}>
         <HeadingArea />
-
         {isLoading &&    
-        <LoadingArea itemsPerColumn={jokesToLoad}/>}
-
+          <LoadingArea itemsPerColumn={JOKES_TO_LOAD}/>}
         {jokes &&
-        <DragDropStage jokes={jokes} />}
-
+          <DragDropStage jokes={jokes} />}
       </Container>
       <FooterArea />      
+      <WinnerScreen/>
     </>
   )
 }
