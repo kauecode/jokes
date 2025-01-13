@@ -21,7 +21,7 @@ Check the live demo on this [link](https://jokes-self.vercel.app/), hosted on Ve
 ## Local Dev Instructions
 
 1. git clone https://github.com/kauecode/jokes.git
-2. cd <project-folder>
+2. cd jokes
 3. 'npm install'
 4. 'npm run dev'
 5. 'npm run test' for testing suite
