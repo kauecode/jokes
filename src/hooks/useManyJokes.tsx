@@ -22,6 +22,7 @@ const useManyJokes = <K,>({ amount = 10, jokeCategory = "Any", type = "twopart" 
 
   useEffect(() => {
 
+    setJokes(null);
     setIsLoading(true);
 
     const controller = new AbortController();
@@ -33,7 +34,7 @@ const useManyJokes = <K,>({ amount = 10, jokeCategory = "Any", type = "twopart" 
     }})
       .then(res => {
         // This timeout will be removed, 
-        // for now it creates suspense, 
+        // for now it creates suspense and 
         // accomplishes nothing, but I heard
         // you like to see spinners... :P        
         setTimeout(() => { 

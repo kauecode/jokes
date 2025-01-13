@@ -7,6 +7,13 @@ import { TwoPartJoke } from '../../types/types';
 import useDndStore from './dndstage.store';
 import useAppStore from '../../stores/app.store';
 
+
+// Key Concepts to understand this component:
+// "Drag Item" is a item that can be dragged onto a "Drag Area"
+// "Drag Items will contain joke setups"
+// "Drag Areas will contain joke delivery"
+
+
 interface DragDropStageProps {
   jokes: TwoPartJoke[]
 }
@@ -18,7 +25,7 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
 
   // Using Zustand store as a 
   // reducer to simplify component
-  // logic, not share with other
+  // logic, not shared with other
   // parts of the app
   const {
     dragItems, 
@@ -52,8 +59,6 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
       const overIdFormatedToNumber = Number(over.id);
       const targetDragArea = dropAreas.find(item => item.id === overIdFormatedToNumber);
       if (!targetDragArea?.full) {
-        // Remove from previous drop area 
-        // in case it is moving between areas
         removeFromDropArea(activeId); 
         updateDropArea(overIdFormatedToNumber, activeId);
         updateDragItem(activeId, overIdFormatedToNumber);
@@ -64,8 +69,9 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
     }
   }    
 
-  // All errors should have been handled 
-  // before we get here, but just in case
+  // All fetch errors should have been handled 
+  // before we get here, but just in case,
+  // we dont show a broken stage.
   if (dragItems.length < 1) return null
 
   return (
@@ -116,11 +122,11 @@ const DragDropStage = ({jokes} : DragDropStageProps) => {
             </Box>
           </Box>
           <Box sx={{ p: 2 }}>
-            {dropAreas.map((area, i) => (
+            {dropAreas.map((area, i) => ( 
               <Droppable key={i} id={area.id} who={area.who}>
-                {dragItems.some(item => item.where === area.id)
+                {dragItems.some(item => item.where === area.id) // If an item matches an area
                   ? dragItems
-                      .filter(item => item.where === area.id)
+                      .filter(item => item.where === area.id) // Render only items in areas
                       .map(item => (
                         <Draggable key={item.id} id={item.id} where={item.where}>
                           <Typography>{item.setup}</Typography>
